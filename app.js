@@ -23,7 +23,7 @@ function goTo(id) {
   cur.classList.add('slide-back');
   cur.classList.remove('active');
   setTimeout(() => cur.classList.remove('slide-back'), 400);
-  next.style.transform = 'translateX(20px)';
+  next.style.transform = '';
   next.classList.add('active');
   currentScreen = id;
   if (id === 'dashboard')  renderCharts();
