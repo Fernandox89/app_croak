@@ -2,12 +2,22 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>CROAK – Water Monitor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Croak · Demo de la app</title>
+  <meta name="description" content="Simulación de la app de Croak: pH, turbidez y TDS de tu agua, con alertas cuando algo sale de rango.">
+  <meta name="theme-color" content="#f4f6f2">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" type="image/png" href="icons/favicon-32.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Croak">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+<div class="stage">
 <div class="phone">
 
   <!-- ============================================================
@@ -15,84 +25,42 @@
   ============================================================ -->
   <div class="screen active" id="splash">
     <div class="splash-logo">
-      <div class="splash-icon">🐸</div>
+      <div class="splash-icon"><img src="icons/logo.png" alt="" width="56" height="56"></div>
       <div class="splash-title">CROAK</div>
       <div class="splash-sub">Smart Water Monitor</div>
     </div>
   </div>
 
   <!-- ============================================================
-       LOGIN
+       BIENVENIDA (entrada directa a la demo)
   ============================================================ -->
-  <div class="screen" id="login">
+  <div class="screen" id="welcome">
     <div class="status-bar">
       <span class="status-time">9:41</span>
       <div class="status-icons"><span>📶</span><span>🔋</span></div>
     </div>
-    <div class="scroll-area" style="padding-bottom:40px;">
-      <div style="padding:32px 28px 0;">
-        <div class="login-header">
-          <div style="font-size:36px;margin-bottom:12px;">🐸</div>
-          <h1>Bienvenido<br>de vuelta</h1>
-          <p>Monitorea tu agua en tiempo real</p>
-        </div>
-        <div class="field-group">
-          <div>
-            <div class="field-label">CORREO ELECTRÓNICO</div>
-            <div class="field-wrap"><input type="email" placeholder="tu@correo.com" value="usuario@croak.mx"></div>
-          </div>
-          <div>
-            <div class="field-label">CONTRASEÑA</div>
-            <div class="field-wrap"><input type="password" placeholder="••••••••" value="12345678"></div>
-          </div>
-        </div>
-        <button class="btn-primary" onclick="goTo('home')">Iniciar sesión</button>
-        <div class="divider" style="margin-top:20px;">o continúa con</div>
-        <button class="btn-outline" onclick="goTo('home')">
-          <svg class="google-icon" viewBox="0 0 24 24">
-            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-          </svg>
-          Continuar con Google
-        </button>
-        <div class="link-row">¿No tienes cuenta? <a onclick="goTo('register')">Crear cuenta</a></div>
+    <div class="scroll-area welcome-body">
+      <div class="welcome-header">
+        <div class="welcome-logo" aria-hidden="true"><img src="icons/logo.png" alt="" width="40" height="40"></div>
+        <h1>Conoce la app<br>de Croak</h1>
+        <p>Así se ve el estado de tu agua: pH, turbidez y TDS en una sola pantalla, con alertas cuando algo sale de rango.</p>
       </div>
-    </div>
-  </div>
 
-  <!-- ============================================================
-       REGISTER
-  ============================================================ -->
-  <div class="screen" id="register">
-    <div class="status-bar">
-      <span class="status-time">9:41</span>
-      <div class="status-icons"><span>📶</span><span>🔋</span></div>
-    </div>
-    <div class="scroll-area" style="padding-bottom:40px;">
-      <div style="padding:32px 28px 0;">
-        <div class="login-header">
-          <div style="font-size:36px;margin-bottom:12px;">🐸</div>
-          <h1>Crear<br>cuenta</h1>
-          <p>Configura tu monitor de agua inteligente</p>
-        </div>
-        <div class="field-group">
-          <div>
-            <div class="field-label">NOMBRE</div>
-            <div class="field-wrap"><input type="text" placeholder="Tu nombre"></div>
-          </div>
-          <div>
-            <div class="field-label">CORREO ELECTRÓNICO</div>
-            <div class="field-wrap"><input type="email" placeholder="tu@correo.com"></div>
-          </div>
-          <div>
-            <div class="field-label">CONTRASEÑA</div>
-            <div class="field-wrap"><input type="password" placeholder="Mínimo 8 caracteres"></div>
-          </div>
-        </div>
-        <button class="btn-primary" onclick="goTo('add-device')">Crear cuenta</button>
-        <div class="link-row" style="margin-top:16px;">¿Ya tienes cuenta? <a onclick="goTo('login')">Iniciar sesión</a></div>
+      <div class="demo-note" role="note">
+        <span aria-hidden="true">🧪</span>
+        <span>Esto es una <strong>simulación</strong>: las lecturas son de ejemplo y no necesitas cuenta. Lo que configures se guarda solo en este navegador.</span>
+      </div>
+
+      <form class="welcome-form" onsubmit="event.preventDefault(); enterDemo();">
+        <label class="field-label" for="welcome-name">¿CÓMO TE LLAMAS? (OPCIONAL)</label>
+        <div class="field-wrap"><input type="text" id="welcome-name" maxlength="24" autocomplete="given-name" placeholder="Tu nombre"></div>
+        <button type="submit" class="btn-primary">Entrar a la demo →</button>
+      </form>
+
+      <div class="install-hint hidden" data-install>
+        <span aria-hidden="true">📲</span>
+        <span class="install-text"></span>
+        <button type="button" class="install-btn hidden" onclick="installApp()">Instalar</button>
       </div>
     </div>
   </div>
@@ -106,7 +74,7 @@
       <div class="status-icons"><span>📶</span><span>🔋</span></div>
     </div>
     <div class="top-bar">
-      <button class="back-btn" onclick="goTo('home')">←</button>
+      <button class="back-btn" onclick="goTo('home')" aria-label="Volver al inicio">←</button>
       <h2>Dispositivos CROAK</h2>
     </div>
     <div class="scroll-area" style="padding-bottom:40px;">
@@ -160,12 +128,12 @@
 
     <div class="home-header">
       <div class="greeting">
-        <small>Buenos días,</small>
-        <h2>Carlos 👋</h2>
+        <small id="greeting-time">Hola</small>
+        <h2 id="greeting-name">Bienvenido 👋</h2>
       </div>
-      <button class="notif-btn" onclick="showToast('🔔 Sin notificaciones nuevas')">
+      <button class="notif-btn" id="notif-btn" onclick="navTo('log')" aria-label="Bitácora">
         🔔
-        <div class="notif-dot"></div>
+        <div class="notif-dot hidden" id="notif-dot"></div>
       </button>
     </div>
 
@@ -175,16 +143,26 @@
     <!-- Scrollable content -->
     <div class="scroll-area">
 
+      <!-- Escenario de demo en curso -->
+      <div class="scenario-banner hidden" id="scenario-banner" role="status">
+        <div class="scenario-banner-row">
+          <span class="scenario-banner-name" id="scenario-banner-name"></span>
+          <span class="scenario-banner-time" id="scenario-banner-time"></span>
+          <button type="button" class="scenario-banner-btn" id="scenario-banner-btn" onclick="stopScenario()">Detener</button>
+        </div>
+        <div class="scenario-banner-track"><div class="scenario-banner-bar" id="scenario-banner-bar"></div></div>
+      </div>
+
       <!-- Status ring -->
       <div class="status-ring-wrap">
         <div class="status-ring-outer safe" id="status-ring">
           <div class="status-ring-inner">
             <div class="status-emoji" id="status-emoji">💧</div>
-            <div class="status-label safe" id="status-label">Agua segura</div>
-            <div class="status-sub live-dot">En vivo</div>
+            <div class="status-label safe" id="status-label">Lecturas normales</div>
+            <div class="status-sub live-dot">En vivo · simulación</div>
           </div>
         </div>
-        <div class="status-message safe" id="status-msg">Todo en condiciones normales</div>
+        <div class="status-message safe" id="status-msg" role="status">Todo dentro de tus rangos</div>
       </div>
 
       <!-- Metrics -->
@@ -214,11 +192,21 @@
       <!-- Smart alert card (auto-shown on warn/danger) -->
       <div class="alert-card hidden" id="alert-card"></div>
 
-      <!-- Valve card + single button -->
+      <!-- Recordatorio de mantenimiento -->
+      <button type="button" class="maint-reminder hidden" id="maint-reminder" onclick="openMaintenance()">
+        <span class="maint-reminder-icon" aria-hidden="true">🧰</span>
+        <span class="maint-reminder-info">
+          <span class="maint-reminder-title">Mantenimiento pendiente</span>
+          <span class="maint-reminder-text" id="maint-reminder-text"></span>
+        </span>
+        <span aria-hidden="true" class="maint-reminder-arrow">→</span>
+      </button>
+
+      <!-- Válvula: función en desarrollo, solo simulada -->
       <div class="valve-card">
         <div class="valve-icon open" id="valve-icon">🚿</div>
         <div class="valve-info">
-          <h4 id="valve-title">Flujo activo</h4>
+          <h4>Válvula <span class="soon-tag">Próximamente</span></h4>
           <p id="valve-desc">El agua circula normalmente</p>
         </div>
         <div class="valve-status open" id="valve-status">Abierta</div>
@@ -233,13 +221,20 @@
         <button class="q-btn" onclick="navTo('dashboard')">
           <span>📊</span><span>Análisis</span>
         </button>
-        <button class="q-btn" onclick="cycleStatus()">
-          <span>🔄</span><span>Simular</span>
+        <button class="q-btn" onclick="openScenarioPicker()">
+          <span>🔄</span><span>Escenario</span>
         </button>
         <button class="q-btn" onclick="navTo('settings')">
           <span>⚙️</span><span>Config</span>
         </button>
       </div>
+
+      <!-- Actividad reciente (bitácora) -->
+      <div class="section-title section-title-row">
+        <span>ACTIVIDAD RECIENTE</span>
+        <button type="button" class="link-btn" onclick="navTo('log')">Ver bitácora →</button>
+      </div>
+      <ul class="log-list activity-list" id="activity-list"></ul>
 
       <!-- All devices -->
       <div class="section-title" style="margin-top:4px;">MIS DISPOSITIVOS</div>
@@ -276,90 +271,86 @@
     </div>
     <div class="dash-header">
       <h1>Análisis</h1>
-      <p>Historial de calidad del agua</p>
+      <p id="dash-subtitle">Historial de calidad del agua</p>
     </div>
-    <div class="filter-tabs">
-      <div class="f-tab active" onclick="setFilter(this,'Hoy')">Hoy</div>
-      <div class="f-tab" onclick="setFilter(this,'Semana')">Semana</div>
-      <div class="f-tab" onclick="setFilter(this,'Mes')">Mes</div>
+    <div class="filter-tabs" role="group" aria-label="Periodo">
+      <button type="button" class="f-tab active" aria-pressed="true" onclick="setFilter(this,'vivo')">En vivo</button>
+      <button type="button" class="f-tab" aria-pressed="false" onclick="setFilter(this,'hoy')">Hoy</button>
+      <button type="button" class="f-tab" aria-pressed="false" onclick="setFilter(this,'semana')">Semana</button>
+      <button type="button" class="f-tab" aria-pressed="false" onclick="setFilter(this,'mes')">Mes</button>
     </div>
     <div class="scroll-area">
       <div class="stat-row">
-        <div class="stat-box"><div class="sv">7.1</div><div class="sl">pH Prom.</div></div>
-        <div class="stat-box"><div class="sv">2.8</div><div class="sl">NTU Prom.</div></div>
-        <div class="stat-box"><div class="sv">178</div><div class="sl">TDS Prom.</div></div>
+        <div class="stat-box"><div class="sv" id="avg-ph">7.1</div><div class="sl">pH prom.</div></div>
+        <div class="stat-box"><div class="sv" id="avg-turb">2.8</div><div class="sl">NTU prom.</div></div>
+        <div class="stat-box"><div class="sv" id="avg-tds">180</div><div class="sl">TDS prom.</div></div>
       </div>
+      <p class="chart-legend"><span class="chart-legend-band"></span> Franja verde: tu rango configurado</p>
 
-      <!-- pH chart -->
       <div class="chart-card">
         <h3>🧪 pH del agua</h3>
         <div class="chart-meta">
           <span class="chart-val" id="dash-ph">7.1</span>
-          <span style="color:var(--safe);font-weight:600;font-size:12px;">↑ Normal</span>
+          <span class="chart-status ok" id="dash-ph-status">→ Normal</span>
         </div>
-        <svg class="chart" viewBox="0 0 310 80">
+        <svg class="chart" viewBox="0 0 310 80" role="img" aria-label="Gráfica de pH del agua">
           <defs>
-            <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+            <linearGradient id="ph-grad" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stop-color="#4caf7d" stop-opacity="0.4"/>
               <stop offset="100%" stop-color="#4caf7d" stop-opacity="0"/>
             </linearGradient>
           </defs>
-          <rect x="0" y="10" width="310" height="60" rx="4" fill="#e8f5ee" opacity="0.5"/>
-          <path class="chart-area" fill="url(#g1)" id="ph-area"/>
+          <rect x="0" y="10" width="310" height="60" rx="4" fill="#f4f6f2"/>
+          <rect class="chart-band" id="ph-band" x="0" y="10" width="310" height="60" rx="4"/>
+          <path class="chart-area" fill="url(#ph-grad)" id="ph-area"/>
           <path class="chart-line" stroke="#4caf7d" id="ph-path"/>
           <g id="ph-dots"></g>
         </svg>
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:6px;">
-          <span>6am</span><span>9am</span><span>12pm</span><span>3pm</span><span>6pm</span><span>Ahora</span>
-        </div>
+        <div class="chart-xlabels"></div>
       </div>
 
-      <!-- Turbidez chart -->
       <div class="chart-card">
         <h3>💧 Turbidez</h3>
         <div class="chart-meta">
           <span class="chart-val" id="dash-turb">2.8 NTU</span>
-          <span style="color:var(--safe);font-weight:600;font-size:12px;">↓ Bajo</span>
+          <span class="chart-status ok" id="dash-turb-status">→ Normal</span>
         </div>
-        <svg class="chart" viewBox="0 0 310 80">
+        <svg class="chart" viewBox="0 0 310 80" role="img" aria-label="Gráfica de Turbidez">
           <defs>
-            <linearGradient id="g2" x1="0" x2="0" y1="0" y2="1">
+            <linearGradient id="turb-grad" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stop-color="#4caf7d" stop-opacity="0.4"/>
               <stop offset="100%" stop-color="#4caf7d" stop-opacity="0"/>
             </linearGradient>
           </defs>
-          <rect x="0" y="10" width="310" height="60" rx="4" fill="#e8f5ee" opacity="0.5"/>
-          <path class="chart-area" fill="url(#g2)" id="turb-area"/>
+          <rect x="0" y="10" width="310" height="60" rx="4" fill="#f4f6f2"/>
+          <rect class="chart-band" id="turb-band" x="0" y="10" width="310" height="60" rx="4"/>
+          <path class="chart-area" fill="url(#turb-grad)" id="turb-area"/>
           <path class="chart-line" stroke="#4caf7d" id="turb-path"/>
           <g id="turb-dots"></g>
         </svg>
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:6px;">
-          <span>6am</span><span>9am</span><span>12pm</span><span>3pm</span><span>6pm</span><span>Ahora</span>
-        </div>
+        <div class="chart-xlabels"></div>
       </div>
 
-      <!-- TDS chart -->
       <div class="chart-card">
         <h3>⚗️ TDS (sólidos disueltos)</h3>
         <div class="chart-meta">
           <span class="chart-val" id="dash-tds">180 ppm</span>
-          <span style="color:var(--safe);font-weight:600;font-size:12px;">↓ Normal</span>
+          <span class="chart-status ok" id="dash-tds-status">→ Normal</span>
         </div>
-        <svg class="chart" viewBox="0 0 310 80">
+        <svg class="chart" viewBox="0 0 310 80" role="img" aria-label="Gráfica de TDS (sólidos disueltos)">
           <defs>
-            <linearGradient id="g3" x1="0" x2="0" y1="0" y2="1">
+            <linearGradient id="tds-grad" x1="0" x2="0" y1="0" y2="1">
               <stop offset="0%" stop-color="#4caf7d" stop-opacity="0.4"/>
               <stop offset="100%" stop-color="#4caf7d" stop-opacity="0"/>
             </linearGradient>
           </defs>
-          <rect x="0" y="10" width="310" height="60" rx="4" fill="#e8f5ee" opacity="0.5"/>
-          <path class="chart-area" fill="url(#g3)" id="tds-area"/>
+          <rect x="0" y="10" width="310" height="60" rx="4" fill="#f4f6f2"/>
+          <rect class="chart-band" id="tds-band" x="0" y="10" width="310" height="60" rx="4"/>
+          <path class="chart-area" fill="url(#tds-grad)" id="tds-area"/>
           <path class="chart-line" stroke="#4caf7d" id="tds-path"/>
           <g id="tds-dots"></g>
         </svg>
-        <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text3);margin-top:6px;">
-          <span>6am</span><span>9am</span><span>12pm</span><span>3pm</span><span>6pm</span><span>Ahora</span>
-        </div>
+        <div class="chart-xlabels"></div>
       </div>
       <div style="height:20px;"></div>
     </div>
@@ -394,106 +385,129 @@
     </div>
     <div class="scroll-area">
 
-      <!-- Device -->
+      <!-- Dispositivo -->
       <div class="settings-section">
         <div class="settings-section-title">DISPOSITIVO ACTIVO</div>
         <div class="device-status-card">
-          <div class="device-status-icon">🐸</div>
+          <div class="device-status-icon" aria-hidden="true">🐸</div>
           <div class="device-status-info">
-            <h4>CROAK – Casa</h4>
-            <p>ID: CRK-A3F9B2</p>
-            <div class="battery-row">
-              <span style="font-size:12px;">🔋</span>
-              <div class="battery-bar"><div class="battery-fill"></div></div>
-              <span class="battery-text">72%</span>
-            </div>
+            <h4 id="settings-device-name">CROAK – Casa</h4>
+            <p id="settings-device-id">ID: CRK-A3F9B2</p>
+            <p class="device-last-reading" id="settings-last-reading">Conectado por WiFi</p>
           </div>
-          <div class="online-badge">En línea</div>
+          <div class="online-badge" id="settings-online-badge">En línea</div>
         </div>
       </div>
 
-      <!-- Notifications -->
+      <!-- Mantenimiento -->
+      <div class="settings-section" id="maintenance-section">
+        <div class="settings-section-title">MANTENIMIENTO</div>
+        <p class="settings-help">Los sensores necesitan cuidados para medir bien. Croak te recuerda cuándo toca.</p>
+        <div class="settings-group" id="maintenance-list"></div>
+      </div>
+
+      <!-- Notificaciones -->
       <div class="settings-section">
         <div class="settings-section-title">NOTIFICACIONES</div>
         <div class="settings-group">
           <div class="setting-row">
-            <div class="setting-icon" style="background:#fff3e0;">🔔</div>
+            <div class="setting-icon" style="background:#e3f2fd;" aria-hidden="true">📳</div>
             <div class="setting-info">
-              <h4>Alertas de calidad</h4>
-              <p>Notificar cuando haya anomalías</p>
+              <h4 id="pref-system-title">En este celular</h4>
+              <p id="system-notif-text">Avisos del sistema aunque la app esté en segundo plano</p>
             </div>
-            <div class="toggle on" onclick="toggleSwitch(this)"></div>
+            <button type="button" class="maint-done hidden" id="system-notif-btn" onclick="enableNotifications()">Activar</button>
+            <button type="button" class="toggle hidden" role="switch" aria-checked="false" aria-labelledby="pref-system-title" id="system-notif-toggle" data-pref="systemNotifications" onclick="togglePref(this)"></button>
           </div>
           <div class="setting-row">
-            <div class="setting-icon" style="background:#e3f2fd;">💧</div>
+            <div class="setting-icon" style="background:#fff3e0;" aria-hidden="true">🔔</div>
             <div class="setting-info">
-              <h4>Desvío automático</h4>
-              <p>Alertar cuando se desvía el agua</p>
+              <h4 id="pref-alerts-title">Alertas de calidad</h4>
+              <p>Avisar cuando una lectura salga de tu rango</p>
             </div>
-            <div class="toggle on" onclick="toggleSwitch(this)"></div>
+            <button type="button" class="toggle on" role="switch" aria-checked="true" aria-labelledby="pref-alerts-title" data-pref="alerts" onclick="togglePref(this)"></button>
           </div>
           <div class="setting-row">
-            <div class="setting-icon" style="background:#f3e5f5;">📱</div>
+            <div class="setting-icon" style="background:#f3e5f5;" aria-hidden="true">📱</div>
             <div class="setting-info">
-              <h4>Resumen diario</h4>
+              <h4 id="pref-dailySummary-title">Resumen diario</h4>
               <p>Reporte de calidad cada mañana</p>
             </div>
-            <div class="toggle" onclick="toggleSwitch(this)"></div>
+            <button type="button" class="toggle" role="switch" aria-checked="false" aria-labelledby="pref-dailySummary-title" data-pref="dailySummary" onclick="togglePref(this)"></button>
           </div>
         </div>
       </div>
 
-      <!-- Valve -->
+      <!-- Válvula (en desarrollo) -->
       <div class="settings-section">
-        <div class="settings-section-title">VÁLVULA</div>
+        <div class="settings-section-title">VÁLVULA <span class="soon-tag">Próximamente</span></div>
         <div class="settings-group">
           <div class="setting-row">
-            <div class="setting-icon" style="background:#e8f5ee;">🔒</div>
+            <div class="setting-icon" style="background:#e8f5ee;" aria-hidden="true">🔒</div>
             <div class="setting-info">
-              <h4>Cierre automático</h4>
-              <p>Cerrar la válvula cuando el agua no sea segura</p>
+              <h4 id="pref-autoClose-title">Cierre automático</h4>
+              <p>En la demo: cerrar la válvula cuando varias lecturas salgan de rango</p>
             </div>
-            <div class="toggle on" onclick="toggleSwitch(this)"></div>
+            <button type="button" class="toggle on" role="switch" aria-checked="true" aria-labelledby="pref-autoClose-title" data-pref="autoClose" onclick="togglePref(this)"></button>
           </div>
         </div>
       </div>
 
-      <!-- Safety ranges -->
+      <!-- Rangos -->
       <div class="settings-section">
-        <div class="settings-section-title">RANGOS DE SEGURIDAD</div>
+        <div class="settings-section-title">TUS RANGOS</div>
+        <p class="settings-help">Croak te avisa cuando una lectura sale de estos rangos. Prueba moverlos y mira cómo cambia el inicio.</p>
         <div class="settings-group">
           <div class="range-row">
-            <div class="range-header"><span>pH mínimo</span><span id="ph-min-val">6.5</span></div>
-            <input type="range" min="5" max="7" step="0.1" value="6.5"
-              oninput="document.getElementById('ph-min-val').textContent=parseFloat(this.value).toFixed(1)">
+            <div class="range-header"><label for="range-phMin">pH mínimo</label><span id="range-phMin-val">6.5</span></div>
+            <input type="range" id="range-phMin" min="5" max="7" step="0.1" value="6.5" oninput="setThreshold('phMin', this.value)">
           </div>
           <div class="range-row">
-            <div class="range-header"><span>pH máximo</span><span id="ph-max-val">8.5</span></div>
-            <input type="range" min="7" max="10" step="0.1" value="8.5"
-              oninput="document.getElementById('ph-max-val').textContent=parseFloat(this.value).toFixed(1)">
+            <div class="range-header"><label for="range-phMax">pH máximo</label><span id="range-phMax-val">8.5</span></div>
+            <input type="range" id="range-phMax" min="7" max="10" step="0.1" value="8.5" oninput="setThreshold('phMax', this.value)">
           </div>
           <div class="range-row">
-            <div class="range-header"><span>Turbidez máxima</span><span id="turb-max-val">5 NTU</span></div>
-            <input type="range" min="1" max="20" step="0.5" value="5"
-              oninput="document.getElementById('turb-max-val').textContent=parseFloat(this.value).toFixed(1)+' NTU'">
+            <div class="range-header"><label for="range-turbMax">Turbidez máxima</label><span id="range-turbMax-val">5.0 NTU</span></div>
+            <input type="range" id="range-turbMax" min="1" max="20" step="0.5" value="5" oninput="setThreshold('turbMax', this.value)">
           </div>
           <div class="range-row">
-            <div class="range-header"><span>TDS máximo</span><span id="tds-max-val">300 ppm</span></div>
-            <input type="range" min="100" max="600" step="10" value="300"
-              oninput="document.getElementById('tds-max-val').textContent=this.value+' ppm'">
+            <div class="range-header"><label for="range-tdsMax">TDS máximo</label><span id="range-tdsMax-val">300 ppm</span></div>
+            <input type="range" id="range-tdsMax" min="100" max="600" step="10" value="300" oninput="setThreshold('tdsMax', this.value)">
           </div>
         </div>
+        <button type="button" class="link-btn" onclick="resetThresholds()">Restablecer rangos</button>
       </div>
 
-      <!-- Account -->
+      <!-- Demo -->
       <div class="settings-section">
-        <div class="settings-section-title">CUENTA</div>
+        <div class="settings-section-title">DEMO</div>
+        <div class="install-hint hidden" data-install>
+          <span aria-hidden="true">📲</span>
+          <span class="install-text"></span>
+          <button type="button" class="install-btn hidden" onclick="installApp()">Instalar</button>
+        </div>
         <div class="settings-group">
-          <div class="setting-row" onclick="goTo('login')" style="cursor:pointer;">
-            <div class="setting-icon" style="background:#fce4ec;">🚪</div>
-            <div class="setting-info"><h4>Cerrar sesión</h4></div>
-            <span style="color:var(--text3);">→</span>
-          </div>
+          <button type="button" class="setting-row setting-action" id="test-notif-row" onclick="testNotification()">
+            <div class="setting-icon" style="background:#fff3e0;" aria-hidden="true">🔔</div>
+            <div class="setting-info">
+              <h4>Probar una notificación</h4>
+              <p>Así se ve una alerta de Croak en tu celular</p>
+            </div>
+            <span aria-hidden="true" style="color:var(--text3);">→</span>
+          </button>
+          <button type="button" class="setting-row setting-action" onclick="exitDemo()">
+            <div class="setting-icon" style="background:#fce4ec;" aria-hidden="true">🚪</div>
+            <div class="setting-info"><h4>Salir de la demo</h4></div>
+            <span aria-hidden="true" style="color:var(--text3);">→</span>
+          </button>
+          <button type="button" class="setting-row setting-action" onclick="resetDemo()">
+            <div class="setting-icon" style="background:#edefe9;" aria-hidden="true">🔄</div>
+            <div class="setting-info">
+              <h4>Reiniciar demo</h4>
+              <p>Borra tu nombre, dispositivos y rangos guardados en este navegador</p>
+            </div>
+            <span aria-hidden="true" style="color:var(--text3);">→</span>
+          </button>
         </div>
       </div>
 
@@ -513,6 +527,36 @@
       <button class="nav-item" onclick="goTo('add-device')">
         <div class="n-icon">➕</div><div class="n-label">Dispositivos</div><div class="nav-pip"></div>
       </button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BITÁCORA
+  ============================================================ -->
+  <div class="screen" id="log">
+    <div class="status-bar">
+      <span class="status-time">9:41</span>
+      <div class="status-icons"><span>📶</span><span>🔋</span></div>
+    </div>
+    <div class="top-bar">
+      <button class="back-btn" onclick="navTo('home')" aria-label="Volver al inicio">←</button>
+      <h2>Bitácora</h2>
+    </div>
+    <div class="scroll-area log-body">
+      <p class="settings-help">Todo lo que pasa con tu agua y tus dispositivos, en orden. Las lecturas son de la simulación.</p>
+      <div id="log-content"></div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MODAL: ESCENARIOS DE LA DEMO
+  ============================================================ -->
+  <div class="modal-overlay" id="scenario-modal" onclick="if(event.target===this)closeScenarioPicker()">
+    <div class="modal-sheet scenario-sheet" role="dialog" aria-modal="true" aria-labelledby="scenario-modal-title">
+      <div class="modal-handle"></div>
+      <div class="modal-title" id="scenario-modal-title">Elige un escenario</div>
+      <div class="modal-subtitle">Mira cómo reacciona Croak. Cada escenario resume horas en unos segundos.</div>
+      <div class="scenario-list" id="scenario-list"></div>
     </div>
   </div>
 
@@ -549,6 +593,7 @@
       <div class="modal-title" id="rec-modal-title">Qué hacer ahora</div>
       <div class="modal-subtitle" id="rec-modal-subtitle">Tu agua presenta anomalías. Sigue estas recomendaciones.</div>
       <div class="rec-modal-body" id="rec-modal-body"></div>
+      <p class="rec-modal-note">Croak detecta cambios en pH, turbidez y TDS. No sustituye un análisis de laboratorio: no detecta bacterias ni metales pesados.</p>
       <button class="rec-modal-close" onclick="closeRecommendationsModal()">Entendido</button>
     </div>
   </div>
@@ -557,6 +602,43 @@
   <div class="toast" id="toast"></div>
 
 </div><!-- /phone -->
+
+<!-- ============================================================
+     MODO PRESENTACIÓN (solo en pantallas anchas)
+============================================================ -->
+<aside class="presenter" id="presenter" aria-label="Panel de presentación">
+  <div class="presenter-head">
+    <img src="icons/logo.png" alt="" width="44" height="44" class="presenter-logo">
+    <div>
+      <h2>Demo de Croak</h2>
+      <p>Panel para presentar: dispara escenarios y explica qué está pasando en la app.</p>
+    </div>
+  </div>
+
+  <section>
+    <h3>Escenarios <span class="presenter-keys">teclas 0–4</span></h3>
+    <div class="presenter-scenarios" id="presenter-scenarios"></div>
+  </section>
+
+  <section>
+    <h3>Qué está pasando</h3>
+    <div class="presenter-now" id="presenter-now" aria-live="polite"></div>
+  </section>
+
+  <section>
+    <h3>Para abrirla en un celular</h3>
+    <p class="presenter-url" id="presenter-url"></p>
+    <p class="presenter-small">Desde el celular se puede instalar como app y recibir notificaciones.</p>
+  </section>
+
+  <div class="presenter-tools">
+    <button type="button" onclick="resetDemo()">🔄 Reiniciar demo</button>
+    <button type="button" onclick="setPresenterHidden(true)">Ocultar panel</button>
+  </div>
+</aside>
+</div><!-- /stage -->
+
+<button type="button" class="presenter-show-btn" id="presenter-show-btn" onclick="setPresenterHidden(false)">🎤 Modo presentación</button>
 
 <script src="app.js"></script>
 </body>
