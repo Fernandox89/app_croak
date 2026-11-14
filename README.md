@@ -1,58 +1,63 @@
-# Croak · demo de la app
+# Croak — app
 
-Simulación web de la app de Croak: muestra pH, turbidez y TDS de un dispositivo, con alertas cuando algo sale de rango. Las lecturas son de ejemplo; no se conecta a un dispositivo real.
+Aplicación web instalable (PWA) de Croak. Muestra las lecturas de pH, turbidez y sólidos disueltos (TDS) que el dispositivo publica en Firebase Realtime Database, su tendencia y las alertas.
 
 Publicada en: https://fernandox89.github.io/app_croak/
 
-## Correrla en local
+## Pantallas
 
-Es HTML, CSS y JavaScript sin dependencias ni build. Solo necesita un servidor estático (el service worker no funciona abriendo el archivo directo):
+- **Panel:** estado general, valor actual de cada indicador con su intervalo configurado y tendencia de 30 minutos, alertas activas y condiciones de medición (temperatura e intervalo).
+- **Tendencias:** gráfica de cada indicador en 15 min, 1 h, 6 h o 24 h, con mínimo, promedio y máximo. La banda sombreada es el intervalo configurado.
+- **Alertas:** alertas activas e historial agrupado por día. Las genera el firmware cuando un valor se mantiene fuera de su intervalo durante N lecturas seguidas.
+- **Dispositivo:**
+  - estado (conexión, señal WiFi, firmware, IP, tiempo encendido);
+  - calibración de cada sensor;
+  - frecuencia de medición e intervalos de alerta, que se guardan en Firebase y el dispositivo aplica en menos de un minuto;
+  - notificaciones del sistema;
+  - fuente de datos.
+
+## Fuente de datos
+
+- **Dispositivo:** lee `devices/<id>/` en Realtime Database con una sesión anónima de Firebase. La estructura y las reglas están en el repo [croak_firmware](https://github.com/Fernandox89/croak_firmware) (`README.md` y `firebase/database.rules.json`).
+- **Demostración:** un simulador en el navegador que imita al firmware: misma forma de datos, mismas reglas de alerta y escenarios (turbidez, TDS, pH ácido, falla de sensor). La app muestra un aviso permanente mientras está activo.
+
+Sin las variables de Firebase, la app solo ofrece la demostración.
+
+## Desarrollo
 
 ```bash
-python3 -m http.server 5180
+npm install
+cp .env.example .env.local   # llena los datos de Firebase
+npm run dev                  # http://localhost:5173
+npm run build                # verifica tipos y genera dist/
 ```
 
-y abrir http://localhost:5180
+Stack: React 18, TypeScript, Vite, Tailwind CSS 4, Firebase JS SDK, lucide-react, y vite-plugin-pwa (service worker con Workbox). Usa la misma paleta y tipografías que la landing.
 
-## Qué incluye
+```text
+src/
+  lib/        tipos, fuentes de datos (firebase.ts, demo.ts), reglas de estado, formato
+  hooks/      suscripciones a los datos
+  components/ AppShell (navegación), MetricCard, TrendChart (SVG propio), AlertRow, ui
+  pages/      Overview, Trends, Alerts, Device
+```
 
-- **Estado único**: Inicio, Análisis, Bitácora y Configuración leen las mismas lecturas, así que nunca se contradicen.
-- **Rangos configurables**: en Configuración → Tus rangos. Al moverlos cambia el estado en Inicio.
-- **Escenarios** (botón "Escenario" en Inicio): líneas de tiempo comprimidas que mueven las lecturas.
-  - Llueve y sube la turbidez · El filtro se satura · Contaminación en la cisterna · El sensor pierde conexión.
-  - Se definen en `SCENARIOS` (`app.js`): valores objetivo por segundo, que se interpolan.
-- **Bitácora**: registra cada cambio de estado, desconexiones, válvula y mantenimiento. Se abre con la campana.
-- **Mantenimiento**: calibrar pH, limpiar turbidez y cambiar el filtro, con recordatorios (`MAINTENANCE` en `app.js`).
-- **Análisis → En vivo**: los últimos 60 s de lecturas de la sesión.
-- **Válvula**: marcada como "Próximamente"; en la demo se simula.
-- Todo lo que configura la persona se guarda en su navegador (`localStorage`, clave `croak-demo-v1`). "Reiniciar demo" lo borra.
+## Publicación
 
-## Modo presentación
+GitHub Actions compila y publica en GitHub Pages en cada push a `main` (`.github/workflows/deploy.yml`). Configuración necesaria en el repo:
 
-En pantallas de 1100 px o más aparece un panel junto al teléfono para quien presenta:
+1. En Settings → Pages → Source, elige **GitHub Actions**.
+2. En Settings → Secrets and variables → Actions → **Variables**, agrega:
+   - `VITE_FIREBASE_API_KEY`
+   - `VITE_FIREBASE_AUTH_DOMAIN`
+   - `VITE_FIREBASE_DATABASE_URL`
+   - `VITE_FIREBASE_PROJECT_ID`
+   - `VITE_FIREBASE_APP_ID`
+   - `VITE_DEFAULT_DEVICE_ID`
 
-- Botones de escenarios y atajos de teclado: **0** día normal, **1–4** escenarios.
-- "Qué está pasando": explica en una frase lo que se ve en la app y qué mostrar después.
-- Se puede ocultar ("Ocultar panel") y volver a mostrar con el botón "Modo presentación".
+   La configuración web de Firebase es pública por diseño: la seguridad la dan las reglas de la base de datos.
 
-## App instalable (PWA)
+## Límites conocidos
 
-- `manifest.webmanifest` + `icons/` permiten instalarla en Android, iPhone y escritorio.
-- `sw.js` guarda la app para abrirla **sin internet**. Con internet siempre intenta traer primero la versión más nueva.
-- **Si agregas archivos** a la app, súmalos a `APP_SHELL` en `sw.js` y cambia el nombre de `CACHE`.
-
-## Notificaciones
-
-Configuración → Notificaciones → "En este celular". Envían un aviso del sistema cuando una lectura sale de rango o el dispositivo se desconecta; al tocarlo se abre la bitácora.
-
-- Android y escritorio: funcionan desde el navegador.
-- iPhone: solo con la app instalada en la pantalla de inicio (iOS 16.4 o posterior).
-- "Probar una notificación" (en Configuración → Demo) manda una de ejemplo.
-
-## Archivos
-
-- `index.html`: pantallas y modales.
-- `app.js`: estado, escenarios, bitácora, mantenimiento, notificaciones y modo presentación.
-- `styles.css`: estilos.
-- `sw.js`, `manifest.webmanifest`, `icons/`: app instalable.
-- `croak-app.html`: versión anterior en un solo archivo (ya no se usa).
+- **Notificaciones:** solo llegan mientras la app está abierta o en segundo plano. Para avisos con la app cerrada, el firmware envía mensajes por Telegram; las notificaciones push requieren Cloud Functions (plan Blaze).
+- **Escritura de configuración:** cualquier sesión puede cambiar la configuración del dispositivo (reglas del MVP). Antes de un piloto hay que asociar cada dispositivo a una cuenta.
