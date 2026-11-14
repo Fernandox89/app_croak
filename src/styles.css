@@ -120,3 +120,20 @@ body {
     animation-duration: 0ms !important;
   }
 }
+
+/* Impresión del reporte: fondo blanco y texto oscuro aunque el tema sea oscuro. */
+@media print {
+  :root {
+    --c-bg: #ffffff;
+    --c-surface: #ffffff;
+    --c-ink: #0b1f15;
+    --c-muted: #3c5a4b;
+    --c-subtle: #5f7a6c;
+    --c-border: #d8eee5;
+    color-scheme: light;
+  }
+  main {
+    padding: 0 !important;
+    max-width: none !important;
+  }
+}

@@ -8,6 +8,7 @@ import { ALERT_PARAM_LABEL } from "./lib/status";
 import { Alerts } from "./pages/Alerts";
 import { Device } from "./pages/Device";
 import { Overview } from "./pages/Overview";
+import { Report } from "./pages/Report";
 import { Simulation } from "./pages/Simulation";
 import { Trends } from "./pages/Trends";
 
@@ -16,6 +17,7 @@ const ROUTES: Record<string, Route> = {
   tendencias: "tendencias",
   alertas: "alertas",
   dispositivo: "dispositivo",
+  reporte: "reporte",
 };
 
 const TITLES: Record<Route, string> = {
@@ -23,6 +25,7 @@ const TITLES: Record<Route, string> = {
   tendencias: "Tendencias",
   alertas: "Alertas",
   dispositivo: IS_DEMO ? "Simulación" : "Dispositivo",
+  reporte: "Reporte",
 };
 
 function readRoute(): Route {
@@ -89,6 +92,7 @@ export function App() {
       {route === "panel" && <Overview />}
       {route === "tendencias" && <Trends />}
       {route === "alertas" && <Alerts />}
+      {route === "reporte" && <Report />}
       {page}
     </AppShell>
   );

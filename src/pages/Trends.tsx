@@ -1,4 +1,4 @@
-import { Download } from "lucide-react";
+import { Download, FileText } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { MIN_SPAN } from "../components/MetricCard";
@@ -159,6 +159,12 @@ export function Trends() {
             >
               <Download className="size-4" strokeWidth={1.8} /> CSV
             </Button>
+            <a
+              href="#/reporte"
+              className="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-line-strong bg-surface px-4 text-sm font-medium text-ink transition-colors hover:bg-surface-alt"
+            >
+              <FileText className="size-4" strokeWidth={1.8} /> Reporte
+            </a>
           </div>
         }
       />

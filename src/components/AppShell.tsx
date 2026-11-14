@@ -8,7 +8,7 @@ import { IS_DEMO, LANDING_URL } from "../lib/edition";
 import { activeAlerts, isOnline } from "../lib/status";
 import { cx } from "./ui";
 
-export type Route = "panel" | "tendencias" | "alertas" | "dispositivo";
+export type Route = "panel" | "tendencias" | "alertas" | "dispositivo" | "reporte";
 
 const NAV: { route: Route; label: string; icon: typeof Bell }[] = [
   { route: "panel", label: "Panel", icon: LayoutDashboard },
@@ -158,7 +158,7 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
   return (
     <div className="min-h-dvh lg:flex">
       {/* Barra lateral (escritorio) */}
-      <aside className="sticky top-0 hidden h-dvh w-60 shrink-0 flex-col border-r border-line bg-surface px-4 py-5 lg:flex">
+      <aside className="sticky top-0 hidden h-dvh print:!hidden w-60 shrink-0 flex-col border-r border-line bg-surface px-4 py-5 lg:flex">
         <Wordmark />
         <nav className="mt-8 flex flex-col gap-1" aria-label="Principal">
           {NAV.map((n) => navItem(n, "side"))}
@@ -172,13 +172,13 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
 
       <div className="flex min-w-0 flex-1 flex-col">
         {/* Barra superior (celular) */}
-        <header className="sticky top-0 z-20 flex items-center justify-between border-b border-line bg-surface/90 px-4 pt-[max(env(safe-area-inset-top),0.75rem)] pb-3 backdrop-blur lg:hidden">
+        <header className="sticky top-0 z-20 flex print:hidden items-center justify-between border-b border-line bg-surface/90 px-4 pt-[max(env(safe-area-inset-top),0.75rem)] pb-3 backdrop-blur lg:hidden">
           <Wordmark />
           <DeviceIndicator className="text-xs" />
         </header>
 
         {source.kind === "demo" && (
-          <div className="border-b border-line bg-surface-alt px-4 py-2.5 lg:px-10">
+          <div className="border-b border-line bg-surface-alt px-4 py-2.5 lg:px-10 print:hidden">
             <div className="mx-auto flex max-w-6xl items-center gap-2.5 text-[13px] text-muted">
               <FlaskConical className="size-4 shrink-0 text-primary" strokeWidth={1.8} />
               <DemoBanner />
@@ -186,7 +186,7 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
           </div>
         )}
         {error && (
-          <div className="border-b border-line bg-danger-soft px-4 py-2.5 lg:px-10" role="alert">
+          <div className="border-b border-line bg-danger-soft px-4 py-2.5 lg:px-10 print:hidden" role="alert">
             <div className="mx-auto flex max-w-6xl items-center gap-2.5 text-[13px] text-danger">
               <CircleAlert className="size-4 shrink-0" strokeWidth={1.8} />
               {error}
@@ -202,7 +202,7 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
       {/* Barra de pestañas (celular) */}
       <nav
         aria-label="Principal"
-        className="fixed inset-x-0 bottom-0 z-20 flex border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-20 flex border-t border-line bg-surface/95 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden print:hidden"
       >
         {NAV.map((n) => navItem(n, "tab"))}
       </nav>
