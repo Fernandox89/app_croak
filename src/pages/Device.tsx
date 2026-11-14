@@ -4,6 +4,7 @@ import { type FormEvent, type ReactNode, useEffect, useState } from "react";
 import { Badge, Button, Card, CardHeader, DataRow, PageHeader, Segmented, Toggle, cx } from "../components/ui";
 import { useConfig, useLatest, useNow, useStatus } from "../hooks/data";
 import { useApp } from "../lib/app-context";
+import { ClearHistoryCard } from "../components/ClearHistoryCard";
 import { MaintenanceCard } from "../components/MaintenanceCard";
 import { ScenarioPicker } from "../components/ScenarioPicker";
 import { useAuth } from "../lib/auth";
@@ -352,6 +353,7 @@ export function Device() {
           <IntervalSection />
           <ThresholdsForm />
           <NotificationsSection />
+          <ClearHistoryCard />
           <AccountSection />
           <Section title="Acerca de Croak">
             <div className="space-y-2 px-5 py-4 text-sm leading-relaxed text-muted">

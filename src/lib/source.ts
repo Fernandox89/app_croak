@@ -16,6 +16,8 @@ export interface DataSource {
   subscribeMaintenance(cb: (m: Maintenance | null) => void): Unsubscribe;
   /** Registra que la tarea se hizo ahora (hora del servidor). */
   markMaintenance(key: MaintenanceKey): Promise<void>;
+  /** Borra lecturas, alertas y la última lectura. No toca la configuración ni el mantenimiento. */
+  clearHistory(): Promise<void>;
   /** Hora del servidor en ms (corrige el reloj del celular). */
   now(): number;
   /** Errores de conexión o permisos, para mostrarlos en vez de una pantalla vacía. */

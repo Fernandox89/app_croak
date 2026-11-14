@@ -161,6 +161,11 @@ export function createFirebaseSource(deviceId: string): DataSource {
       await authReady;
       await update(ref(db, `${base}/maintenance`), { [key]: serverTimestamp() });
     },
+    clearHistory: async () => {
+      await authReady;
+      // Una sola escritura con varias rutas: se borra todo o nada.
+      await update(ref(db, base), { readings: null, alerts: null, latest: null });
+    },
     saveConfig: async (c) => {
       await authReady;
       await set(ref(db, `${base}/config`), c);

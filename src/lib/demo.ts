@@ -302,6 +302,14 @@ export class DemoSource implements DataSource {
     this.maintenance = { ...this.maintenance, [key]: Date.now() };
     this.listeners.maintenance.forEach((cb) => cb(this.maintenance));
   }
+  async clearHistory() {
+    this.history = [];
+    this.alerts = [];
+    this.rules.clear();
+    this.listeners.latest.forEach((cb) => cb(null));
+    this.listeners.history.forEach(({ cb }) => cb([]));
+    this.listeners.alerts.forEach(({ cb }) => cb([]));
+  }
   subscribeError(cb: (m: string | null) => void) {
     queueMicrotask(() => cb(null));
     return () => {};
