@@ -6,6 +6,7 @@ const GUIDANCE: Record<AlertParam, string[]> = {
   turbidity: [
     "Mientras dure, usa agua purificada para beber y cocinar. Hervir no elimina el sedimento.",
     "Revisa si hay cortes, reparaciones o lluvias recientes: en temporada de lluvias las presas arrastran lodo.",
+    "Si el servicio acaba de regresar tras un corte, deja correr el agua unos minutos: la primera que sale suele traer más turbidez y bacterias.",
     "Si sigue así después de que se normaliza el servicio, revisa y limpia el tinaco o la cisterna.",
   ],
   tds: [
