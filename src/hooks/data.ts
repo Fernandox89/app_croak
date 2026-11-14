@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 import { useApp } from "../lib/app-context";
 import type { Unsubscribe } from "../lib/source";
-import { type AlertEvent, DEFAULT_CONFIG, type DeviceConfig, type DeviceStatus, type Reading } from "../lib/types";
+import { type AlertEvent, DEFAULT_CONFIG, type DeviceConfig, type DeviceStatus, type Maintenance, type Reading } from "../lib/types";
 
 /** `undefined` mientras carga; después, el valor (que puede ser null si no hay datos). */
 function useSubscription<T>(subscribe: (cb: (v: T) => void) => Unsubscribe, deps: unknown[]): T | undefined {
@@ -44,6 +44,11 @@ export function useHistory(windowMs: number) {
 export function useAlerts(limit = 100) {
   const { source } = useApp();
   return useSubscription<AlertEvent[]>((cb) => source.subscribeAlerts(limit, cb), [source, limit]);
+}
+
+export function useMaintenance() {
+  const { source } = useApp();
+  return useSubscription<Maintenance | null>((cb) => source.subscribeMaintenance(cb), [source]);
 }
 
 export function useSourceError() {

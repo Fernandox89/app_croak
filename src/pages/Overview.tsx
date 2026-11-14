@@ -1,11 +1,12 @@
-import { ArrowRight, CircleAlert, CircleCheck, Clock, Thermometer, TriangleAlert, WifiOff } from "lucide-react";
+import { ArrowRight, CircleAlert, CircleCheck, Clock, Thermometer, TriangleAlert, WifiOff, Wrench } from "lucide-react";
 
 import { AlertRow } from "../components/AlertRow";
 import { href } from "../components/AppShell";
 import { MetricCard } from "../components/MetricCard";
 import { Card, CardHeader, EmptyState, PageHeader, cx } from "../components/ui";
-import { useAlerts, useConfig, useHistory, useLatest, useNow, useStatus } from "../hooks/data";
+import { useAlerts, useConfig, useHistory, useLatest, useMaintenance, useNow, useStatus } from "../hooks/data";
 import { formatInterval, formatRelative } from "../lib/format";
+import { pendingTasks } from "../lib/maintenance";
 import { METRICS, OVERALL_COPY, type OverallState, activeAlerts, lastContact, overallState } from "../lib/status";
 
 const WINDOW_MS = 30 * 60 * 1000;
@@ -36,6 +37,9 @@ export function Overview() {
   const interval = status?.interval_s ?? config.interval_s;
   const gapMs = Math.max(interval * 3000, 180_000);
   const active = activeAlerts(alerts);
+  const maintenance = useMaintenance();
+  const overdue = maintenance === undefined ? [] : pendingTasks(maintenance, now);
+  const noRecords = maintenance !== undefined && !Object.keys(maintenance ?? {}).length;
 
   return (
     <>
@@ -119,6 +123,23 @@ export function Overview() {
               <div className="text-sm">
                 <dt className="text-ink">Una lectura cada {formatInterval(interval)}</dt>
                 <dd className="text-muted">Cada lectura promedia 64 muestras por sensor.</dd>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 px-5 py-3.5">
+              <Wrench className={cx("mt-0.5 size-4 shrink-0", overdue.length ? "text-warn" : "text-muted")} strokeWidth={1.8} />
+              <div className="text-sm">
+                <dt className="text-ink">
+                  {overdue.length
+                    ? `Mantenimiento pendiente: ${overdue.map((t) => t.label.toLowerCase()).join(", ")}`
+                    : noRecords
+                      ? "Sin mantenimiento registrado"
+                      : "Mantenimiento al día"}
+                </dt>
+                <dd className="text-muted">
+                  <a href={href("dispositivo")} className="font-medium text-primary hover:underline">
+                    Ver recordatorios
+                  </a>
+                </dd>
               </div>
             </div>
           </dl>

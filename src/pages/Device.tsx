@@ -4,6 +4,7 @@ import { type FormEvent, type ReactNode, useEffect, useState } from "react";
 import { Badge, Button, Card, CardHeader, DataRow, PageHeader, Segmented, Toggle, cx } from "../components/ui";
 import { useConfig, useLatest, useNow, useStatus } from "../hooks/data";
 import { useApp } from "../lib/app-context";
+import { MaintenanceCard } from "../components/MaintenanceCard";
 import { ScenarioPicker } from "../components/ScenarioPicker";
 import { useAuth } from "../lib/auth";
 import { DemoSource } from "../lib/demo";
@@ -343,6 +344,7 @@ export function Device() {
             </dl>
           </Section>
 
+          <MaintenanceCard />
           <SourceSection />
         </div>
 

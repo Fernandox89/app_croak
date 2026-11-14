@@ -16,12 +16,14 @@ import {
   orderByChild,
   query,
   ref,
+  serverTimestamp,
   set,
   startAt,
+  update,
 } from "firebase/database";
 
 import type { DataSource, Unsubscribe } from "./source";
-import type { AlertEvent, DeviceConfig, DeviceStatus, Reading } from "./types";
+import type { AlertEvent, DeviceConfig, DeviceStatus, Maintenance, Reading } from "./types";
 
 const config = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY as string | undefined,
@@ -153,6 +155,12 @@ export function createFirebaseSource(deviceId: string): DataSource {
         (v) => listOf<Omit<AlertEvent, "id">>(v).sort((a, b) => b.ts - a.ts) as AlertEvent[],
         cb,
       ),
+    subscribeMaintenance: (cb) =>
+      listen(() => ref(db, `${base}/maintenance`), (v) => (v as Maintenance) ?? null, cb),
+    markMaintenance: async (key) => {
+      await authReady;
+      await update(ref(db, `${base}/maintenance`), { [key]: serverTimestamp() });
+    },
     saveConfig: async (c) => {
       await authReady;
       await set(ref(db, `${base}/config`), c);

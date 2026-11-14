@@ -1,4 +1,4 @@
-import type { AlertEvent, DeviceConfig, DeviceStatus, Reading } from "./types";
+import type { AlertEvent, DeviceConfig, DeviceStatus, Maintenance, MaintenanceKey, Reading } from "./types";
 
 export type Unsubscribe = () => void;
 
@@ -13,6 +13,9 @@ export interface DataSource {
   subscribeHistory(sinceMs: number, cb: (rs: Reading[]) => void): Unsubscribe;
   subscribeAlerts(limit: number, cb: (a: AlertEvent[]) => void): Unsubscribe;
   saveConfig(c: DeviceConfig): Promise<void>;
+  subscribeMaintenance(cb: (m: Maintenance | null) => void): Unsubscribe;
+  /** Registra que la tarea se hizo ahora (hora del servidor). */
+  markMaintenance(key: MaintenanceKey): Promise<void>;
   /** Hora del servidor en ms (corrige el reloj del celular). */
   now(): number;
   /** Errores de conexión o permisos, para mostrarlos en vez de una pantalla vacía. */

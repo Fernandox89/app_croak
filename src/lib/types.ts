@@ -49,6 +49,15 @@ export interface DeviceConfig {
   thresholds: Thresholds;
 }
 
+/** Fechas (ms) del último mantenimiento registrado. Lo escribe la app; el firmware no lo usa. */
+export interface Maintenance {
+  calibrated_at?: number;
+  tank_cleaned_at?: number;
+  probes_cleaned_at?: number;
+}
+
+export type MaintenanceKey = keyof Maintenance;
+
 export type AlertParam = "ph" | "tds" | "turbidity" | "sensor_ph" | "sensor_tds" | "sensor_turbidity";
 
 export interface AlertEvent {

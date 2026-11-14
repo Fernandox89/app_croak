@@ -1,5 +1,6 @@
 import { ArrowUpRight } from "lucide-react";
 
+import { MaintenanceCard } from "../components/MaintenanceCard";
 import { ScenarioPicker } from "../components/ScenarioPicker";
 import { Card, CardHeader, DataRow, PageHeader } from "../components/ui";
 import { useConfig } from "../hooks/data";
@@ -21,13 +22,16 @@ export function Simulation() {
         subtitle="Elige una situación y observa cómo responden el panel, las tendencias y las alertas."
       />
       <div className="grid gap-4 lg:grid-cols-5">
-        <Card className="lg:col-span-3">
+        <div className="flex flex-col gap-4 lg:col-span-3">
+        <Card>
           <CardHeader
             title="Escenarios"
             description="Cada escenario cambia gradualmente las lecturas simuladas, como ocurriría en una instalación real."
           />
           <div className="px-5 py-4">{source instanceof DemoSource && <ScenarioPicker source={source} />}</div>
         </Card>
+        <MaintenanceCard />
+        </div>
 
         <div className="flex flex-col gap-4 lg:col-span-2">
           <Card>

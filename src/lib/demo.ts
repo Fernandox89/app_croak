@@ -10,6 +10,8 @@ import {
   DEFAULT_CONFIG,
   type DeviceConfig,
   type DeviceStatus,
+  type Maintenance,
+  type MaintenanceKey,
   type Reading,
 } from "./types";
 
@@ -85,6 +87,12 @@ export class DemoSource implements DataSource {
   private history: Reading[] = [];
   private alerts: AlertEvent[] = [];
   private config: DeviceConfig = structuredClone(DEFAULT_CONFIG);
+  // Fechas de ejemplo: la limpieza del tinaco aparece vencida para mostrar el recordatorio.
+  private maintenance: Maintenance = {
+    calibrated_at: Date.now() - 41 * 86_400_000,
+    tank_cleaned_at: Date.now() - 197 * 86_400_000,
+    probes_cleaned_at: Date.now() - 12 * 86_400_000,
+  };
   private seq = 0;
   private startedAt = Date.now();
   private rules = new Map<AlertParam, RuleState>();
@@ -96,6 +104,7 @@ export class DemoSource implements DataSource {
     history: new Set<{ since: number; cb: (rs: Reading[]) => void }>(),
     alerts: new Set<{ limit: number; cb: (a: AlertEvent[]) => void }>(),
     scenario: new Set<(s: DemoScenario) => void>(),
+    maintenance: new Set<(m: Maintenance | null) => void>(),
   };
 
   constructor(deviceId: string) {
@@ -281,6 +290,17 @@ export class DemoSource implements DataSource {
   async saveConfig(c: DeviceConfig) {
     this.config = structuredClone(c);
     this.listeners.config.forEach((cb) => cb(this.config));
+  }
+  subscribeMaintenance(cb: (m: Maintenance | null) => void) {
+    this.listeners.maintenance.add(cb);
+    queueMicrotask(() => cb(this.maintenance));
+    return () => {
+      this.listeners.maintenance.delete(cb);
+    };
+  }
+  async markMaintenance(key: MaintenanceKey) {
+    this.maintenance = { ...this.maintenance, [key]: Date.now() };
+    this.listeners.maintenance.forEach((cb) => cb(this.maintenance));
   }
   subscribeError(cb: (m: string | null) => void) {
     queueMicrotask(() => cb(null));
