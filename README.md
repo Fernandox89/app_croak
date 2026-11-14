@@ -77,4 +77,3 @@ scripts/      dar-acceso.sh
 ## Límites conocidos
 
 - **Notificaciones:** solo llegan mientras la app está abierta o en segundo plano. Para avisos con la app cerrada, el firmware envía mensajes por Telegram; las notificaciones push requieren Cloud Functions (plan Blaze).
-- **Acceso anónimo:** sigue activado en Firebase Authentication, pero las reglas no le permiten leer ni escribir nada. Conviene apagarlo en la consola (Authentication → Método de acceso → Anónimo).
