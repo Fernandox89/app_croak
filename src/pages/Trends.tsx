@@ -1,9 +1,12 @@
+import { Download } from "lucide-react";
 import { useMemo, useState } from "react";
 
 import { MIN_SPAN } from "../components/MetricCard";
 import { TrendChart } from "../components/TrendChart";
-import { Card, PageHeader, Segmented } from "../components/ui";
+import { Button, Card, PageHeader, Segmented } from "../components/ui";
 import { useConfig, useHistory, useNow, useStatus } from "../hooks/data";
+import { useApp } from "../lib/app-context";
+import { NOM127 } from "../lib/guidance";
 import { band, formatMetric, METRICS, type MetricInfo, rangeText } from "../lib/status";
 import type { Reading, Thresholds } from "../lib/types";
 
@@ -62,6 +65,7 @@ function MetricTrend({
           <p className="mt-0.5 text-xs text-muted">
             {info.description}. Intervalo configurado: {rangeText(info.key, thresholds)}
           </p>
+          <p className="mt-0.5 text-xs text-subtle">Referencia {NOM127[info.key]}.</p>
         </div>
         <dl className="grid grid-cols-3 gap-6">
           <Stat label="Mínimo" value={fmt(stats?.min)} />
@@ -86,7 +90,41 @@ function MetricTrend({
   );
 }
 
+// Historial del periodo en CSV: sirve para comparar contra un análisis de laboratorio o integrarlo a una
+// bitácora. Separado por comas, con punto decimal y hora local en ISO.
+function downloadCsv(history: Reading[], deviceId: string, range: string) {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const local = (ts: number) => {
+    const d = new Date(ts);
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+  };
+  const num = (v: number | null | undefined) => (v === null || v === undefined || Number.isNaN(v) ? "" : String(v));
+  const rows = [
+    ["fecha_hora_local", "ph", "estado_ph", "turbidez_rel_pct", "estado_turbidez", "tds_ppm", "estado_tds", "temp_c", "fuente_temp"],
+    ...history.map((r) => [
+      local(r.ts),
+      num(r.ph?.value),
+      r.ph?.status ?? "",
+      num(r.turbidity?.value),
+      r.turbidity?.status ?? "",
+      num(r.tds?.value),
+      r.tds?.status ?? "",
+      num(r.temp_c),
+      r.temp_source ?? "",
+    ]),
+  ];
+  const csv = rows.map((r) => r.join(",")).join("\r\n");
+  const url = URL.createObjectURL(new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" }));
+  const a = document.createElement("a");
+  const d = new Date();
+  a.href = url;
+  a.download = `${deviceId.startsWith("croak") ? deviceId : `croak-${deviceId}`}-${range}-${d.getFullYear()}${pad(d.getMonth() + 1)}${pad(d.getDate())}.csv`;
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
 export function Trends() {
+  const { source } = useApp();
   const [range, setRange] = useState<Range>("1h");
   const windowMs = RANGES.find((r) => r.value === range)!.ms;
   const history = useHistory(windowMs);
@@ -107,12 +145,21 @@ export function Trends() {
             : `${history.length.toLocaleString("es-MX")} lecturas en el periodo. La banda sombreada es el intervalo configurado.`
         }
         action={
-          <Segmented
-            label="Periodo"
-            value={range}
-            onChange={setRange}
-            options={RANGES.map(({ value, label }) => ({ value, label }))}
-          />
+          <div className="flex flex-wrap items-center gap-2">
+            <Segmented
+              label="Periodo"
+              value={range}
+              onChange={setRange}
+              options={RANGES.map(({ value, label }) => ({ value, label }))}
+            />
+            <Button
+              onClick={() => downloadCsv(history ?? [], source.deviceId, range)}
+              disabled={!history?.length}
+              title="Descargar las lecturas del periodo en CSV"
+            >
+              <Download className="size-4" strokeWidth={1.8} /> CSV
+            </Button>
+          </div>
         }
       />
       <div className="flex flex-col gap-4">

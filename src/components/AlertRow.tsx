@@ -1,11 +1,23 @@
 import { CircleCheck, CircleAlert, TriangleAlert } from "lucide-react";
 
 import { formatRelative, formatTime } from "../lib/format";
+import { guidanceFor } from "../lib/guidance";
 import { ALERT_PARAM_LABEL } from "../lib/status";
 import type { AlertEvent } from "../lib/types";
 import { cx } from "./ui";
 
-export function AlertRow({ alert, now, showTime }: { alert: AlertEvent; now: number; showTime?: boolean }) {
+export function AlertRow({
+  alert,
+  now,
+  showTime,
+  showGuidance,
+}: {
+  alert: AlertEvent;
+  now: number;
+  showTime?: boolean;
+  showGuidance?: boolean;
+}) {
+  const guidance = showGuidance ? guidanceFor(alert) : [];
   const isSensor = alert.param.startsWith("sensor_");
   const Icon = !alert.active ? CircleCheck : isSensor ? CircleAlert : TriangleAlert;
   const tone = !alert.active ? "text-ok bg-ok-soft" : isSensor ? "text-danger bg-danger-soft" : "text-warn bg-warn-soft";
@@ -25,6 +37,16 @@ export function AlertRow({ alert, now, showTime }: { alert: AlertEvent; now: num
           </time>
         </div>
         <p className="mt-0.5 text-sm leading-snug text-muted">{alert.message}</p>
+        {guidance.length > 0 && (
+          <div className="mt-2.5 rounded-xl bg-surface-alt px-3.5 py-2.5">
+            <p className="text-xs font-medium tracking-wide text-ink uppercase">Qué hacer</p>
+            <ul className="mt-1.5 list-disc space-y-1 pl-4 text-[13px] leading-snug text-muted marker:text-subtle">
+              {guidance.map((g) => (
+                <li key={g}>{g}</li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </li>
   );

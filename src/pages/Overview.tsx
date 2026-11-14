@@ -84,7 +84,7 @@ export function Overview() {
           {active.length ? (
             <ul className="divide-y divide-line">
               {active.map((a) => (
-                <AlertRow key={a.id} alert={a} now={now} />
+                <AlertRow key={a.id} alert={a} now={now} showGuidance />
               ))}
             </ul>
           ) : (
