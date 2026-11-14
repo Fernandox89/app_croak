@@ -4,7 +4,9 @@ import { type FormEvent, type ReactNode, useEffect, useState } from "react";
 import { Badge, Button, Card, CardHeader, DataRow, PageHeader, Segmented, Toggle, cx } from "../components/ui";
 import { useConfig, useLatest, useNow, useStatus } from "../hooks/data";
 import { useApp } from "../lib/app-context";
-import { DEMO_SCENARIOS, type DemoScenario, DemoSource } from "../lib/demo";
+import { ScenarioPicker } from "../components/ScenarioPicker";
+import { useAuth } from "../lib/auth";
+import { DemoSource } from "../lib/demo";
 import { formatDuration, formatInterval, formatRelative, rssiQuality } from "../lib/format";
 import { calibrationText, isOnline, lastContact } from "../lib/status";
 import { DEFAULT_CONFIG, type Thresholds } from "../lib/types";
@@ -232,17 +234,7 @@ function NotificationsSection() {
 }
 
 function SourceSection() {
-  const { prefs, setPrefs, source, firebaseConfigured } = useApp();
-  const [deviceId, setDeviceId] = useState(prefs.deviceId);
-  const [scenario, setScenario] = useState<DemoScenario | null>(
-    source instanceof DemoSource ? source.getScenario() : null,
-  );
-
-  useEffect(() => {
-    if (!(source instanceof DemoSource)) return setScenario(null);
-    setScenario(source.getScenario());
-    return source.subscribeScenario(setScenario);
-  }, [source]);
+  const { prefs, setPrefs, source, canUseDevice, devices } = useApp();
 
   return (
     <Section title="Fuente de datos">
@@ -252,7 +244,7 @@ function SourceSection() {
           value={prefs.mode}
           onChange={(mode) => setPrefs({ mode })}
           options={
-            firebaseConfigured
+            canUseDevice
               ? [
                   { value: "device", label: "Dispositivo" },
                   { value: "demo", label: "Demostración" },
@@ -260,62 +252,43 @@ function SourceSection() {
               : [{ value: "demo", label: "Demostración" }]
           }
         />
-        {!firebaseConfigured && (
+        {prefs.mode === "device" && canUseDevice && devices !== undefined && devices.length === 0 && (
           <p className="text-sm text-muted">
-            Esta versión de la app no tiene configurado un servidor de datos, así que solo puede mostrar la
-            demostración.
+            Tu cuenta todavía no tiene dispositivos asignados. Pide al equipo de Croak que te dé acceso.
           </p>
         )}
-        {prefs.mode === "device" && firebaseConfigured && (
-          <form
-            className="flex flex-wrap items-end gap-3"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const id = deviceId.trim();
-              if (id) setPrefs({ deviceId: id });
-            }}
-          >
-            <label className="block">
-              <span className="text-sm text-muted">Identificador del dispositivo</span>
-              <input
-                className="mt-1.5 h-10 w-56 rounded-xl border border-line-strong bg-surface px-3 font-mono text-[15px] text-ink outline-none focus:border-primary"
-                value={deviceId}
-                onChange={(e) => setDeviceId(e.target.value)}
-                autoCapitalize="off"
-                autoCorrect="off"
-                spellCheck={false}
-              />
-            </label>
-            <Button type="submit" disabled={deviceId.trim() === prefs.deviceId}>
-              Aplicar
-            </Button>
-          </form>
+        {prefs.mode === "device" && canUseDevice && devices && devices.length > 1 && (
+          <Segmented
+            label="Dispositivo"
+            value={prefs.deviceId}
+            onChange={(deviceId) => setPrefs({ deviceId })}
+            options={devices.map((d) => ({ value: d, label: d }))}
+          />
         )}
       </div>
 
       {source instanceof DemoSource && (
         <div className="border-t border-line px-5 py-4">
           <h3 className="text-sm font-medium text-ink">Escenario de demostración</h3>
-          <p className="mt-0.5 text-sm text-muted">Simula situaciones para mostrar cómo responde la app.</p>
-          <div className="mt-3 grid gap-2 sm:grid-cols-2">
-            {DEMO_SCENARIOS.map((s) => (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => source.setScenario(s.id)}
-                aria-pressed={scenario === s.id}
-                className={cx(
-                  "rounded-xl border px-4 py-3 text-left transition-colors",
-                  scenario === s.id ? "border-primary bg-primary-soft" : "border-line hover:bg-surface-alt",
-                )}
-              >
-                <div className={cx("text-sm font-medium", scenario === s.id ? "text-primary" : "text-ink")}>{s.label}</div>
-                <div className="mt-0.5 text-xs text-muted">{s.description}</div>
-              </button>
-            ))}
-          </div>
+          <p className="mt-0.5 mb-3 text-sm text-muted">Simula situaciones para mostrar cómo responde la app.</p>
+          <ScenarioPicker source={source} />
         </div>
       )}
+    </Section>
+  );
+}
+
+function AccountSection() {
+  const auth = useAuth();
+  if (!auth) return null;
+  return (
+    <Section title="Cuenta">
+      <dl className="divide-y divide-line">
+        <DataRow label="Sesión iniciada como" value={<span className="break-all">{auth.user.email}</span>} />
+      </dl>
+      <div className="border-t border-line px-5 py-4">
+        <Button onClick={() => auth.signOut()}>Cerrar sesión</Button>
+      </div>
     </Section>
   );
 }
@@ -377,6 +350,7 @@ export function Device() {
           <IntervalSection />
           <ThresholdsForm />
           <NotificationsSection />
+          <AccountSection />
           <Section title="Acerca de Croak">
             <div className="space-y-2 px-5 py-4 text-sm leading-relaxed text-muted">
               <p>

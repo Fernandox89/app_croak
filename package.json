@@ -1,11 +1,14 @@
 {
   "name": "croak-app",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:demo": "vite --mode demo",
     "build": "tsc -b && vite build",
+    "build:demo": "tsc -b && vite build --mode demo",
+    "deploy:app": "npm run build && firebase deploy --only hosting --project croak-monitor",
     "preview": "vite preview",
     "typecheck": "tsc -b"
   },

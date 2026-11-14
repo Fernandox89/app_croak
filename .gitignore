@@ -3,3 +3,5 @@ dist/
 dev-dist/
 .env.local
 *.tsbuildinfo
+.firebase/
+*.local.txt

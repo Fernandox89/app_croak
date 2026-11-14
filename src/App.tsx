@@ -3,10 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { AppShell, type Route } from "./components/AppShell";
 import { useAlerts } from "./hooks/data";
 import { useApp } from "./lib/app-context";
+import { IS_DEMO } from "./lib/edition";
 import { ALERT_PARAM_LABEL } from "./lib/status";
 import { Alerts } from "./pages/Alerts";
 import { Device } from "./pages/Device";
 import { Overview } from "./pages/Overview";
+import { Simulation } from "./pages/Simulation";
 import { Trends } from "./pages/Trends";
 
 const ROUTES: Record<string, Route> = {
@@ -20,7 +22,7 @@ const TITLES: Record<Route, string> = {
   panel: "Panel",
   tendencias: "Tendencias",
   alertas: "Alertas",
-  dispositivo: "Dispositivo",
+  dispositivo: IS_DEMO ? "Simulación" : "Dispositivo",
 };
 
 function readRoute(): Route {
@@ -81,12 +83,13 @@ function useAlertNotifications() {
 export function App() {
   const route = useRoute();
   useAlertNotifications();
+  const page = route === "dispositivo" ? IS_DEMO ? <Simulation /> : <Device /> : null;
   return (
     <AppShell route={route}>
       {route === "panel" && <Overview />}
       {route === "tendencias" && <Trends />}
       {route === "alertas" && <Alerts />}
-      {route === "dispositivo" && <Device />}
+      {page}
     </AppShell>
   );
 }

@@ -1,8 +1,10 @@
-import { Bell, ChartLine, CircleAlert, Cpu, FlaskConical, LayoutDashboard } from "lucide-react";
+import { Bell, ChartLine, CircleAlert, Cpu, FlaskConical, LayoutDashboard, LogOut, SlidersHorizontal } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { useAlerts, useLatest, useNow, useSourceError, useStatus } from "../hooks/data";
 import { useApp } from "../lib/app-context";
+import { useAuth } from "../lib/auth";
+import { IS_DEMO, LANDING_URL } from "../lib/edition";
 import { activeAlerts, isOnline } from "../lib/status";
 import { cx } from "./ui";
 
@@ -12,7 +14,9 @@ const NAV: { route: Route; label: string; icon: typeof Bell }[] = [
   { route: "panel", label: "Panel", icon: LayoutDashboard },
   { route: "tendencias", label: "Tendencias", icon: ChartLine },
   { route: "alertas", label: "Alertas", icon: Bell },
-  { route: "dispositivo", label: "Dispositivo", icon: Cpu },
+  IS_DEMO
+    ? { route: "dispositivo", label: "Simulación", icon: SlidersHorizontal }
+    : { route: "dispositivo", label: "Dispositivo", icon: Cpu },
 ];
 
 export const href = (r: Route) => (r === "panel" ? "#/" : `#/${r}`);
@@ -23,6 +27,14 @@ function DeviceIndicator({ className }: { className?: string }) {
   const status = useStatus() ?? null;
   const now = useNow(5000);
   const online = isOnline(status, latest, now);
+  if (source.kind === "demo") {
+    return (
+      <div className={cx("flex items-center gap-2 text-sm", className)}>
+        <span className="size-2 rounded-full bg-primary" aria-hidden />
+        <span className="text-ink">Datos simulados</span>
+      </div>
+    );
+  }
   return (
     <div className={cx("flex items-center gap-2 text-sm", className)}>
       <span
@@ -41,6 +53,59 @@ function Wordmark() {
       <img src="icons/logo.png" alt="" className="size-8 rounded-lg" />
       <span className="font-display text-lg font-bold tracking-tight text-ink">Croak</span>
     </a>
+  );
+}
+
+function AccountBox() {
+  const auth = useAuth();
+  if (!auth) return null;
+  return (
+    <div className="mt-3 flex items-center gap-2 border-t border-line pt-3">
+      <div className="min-w-0 flex-1">
+        <div className="text-xs text-subtle">Sesión</div>
+        <div className="truncate text-[13px] text-ink" title={auth.user.email ?? undefined}>
+          {auth.user.email}
+        </div>
+      </div>
+      <button
+        type="button"
+        onClick={() => auth.signOut()}
+        className="flex size-8 shrink-0 items-center justify-center rounded-lg text-muted hover:bg-surface-alt hover:text-ink"
+        aria-label="Cerrar sesión"
+        title="Cerrar sesión"
+      >
+        <LogOut className="size-4" strokeWidth={1.8} />
+      </button>
+    </div>
+  );
+}
+
+function DemoBanner() {
+  if (IS_DEMO) {
+    return (
+      <span>
+        <span className="font-medium text-ink">Demostración.</span> Los datos son simulados para mostrar cómo
+        funciona Croak.{" "}
+        <a href={href("dispositivo")} className="font-medium text-primary underline-offset-2 hover:underline">
+          Probar escenarios
+        </a>
+        <span className="hidden sm:inline">
+          {" · "}
+          <a href={LANDING_URL} className="font-medium text-primary underline-offset-2 hover:underline">
+            Conocer el proyecto
+          </a>
+        </span>
+      </span>
+    );
+  }
+  return (
+    <span>
+      <span className="font-medium text-ink">Modo demostración.</span> Los datos son simulados y no provienen de un
+      dispositivo.{" "}
+      <a href={href("dispositivo")} className="font-medium text-primary underline-offset-2 hover:underline">
+        Cambiar fuente de datos
+      </a>
+    </span>
   );
 }
 
@@ -99,8 +164,9 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
           {NAV.map((n) => navItem(n, "side"))}
         </nav>
         <div className="mt-auto rounded-xl border border-line px-3 py-2.5">
-          <div className="text-xs text-subtle">Dispositivo</div>
+          <div className="text-xs text-subtle">{source.kind === "demo" ? "Fuente" : "Dispositivo"}</div>
           <DeviceIndicator className="mt-1 flex-wrap gap-x-2 gap-y-0.5" />
+          <AccountBox />
         </div>
       </aside>
 
@@ -115,13 +181,7 @@ export function AppShell({ route, children }: { route: Route; children: ReactNod
           <div className="border-b border-line bg-surface-alt px-4 py-2.5 lg:px-10">
             <div className="mx-auto flex max-w-6xl items-center gap-2.5 text-[13px] text-muted">
               <FlaskConical className="size-4 shrink-0 text-primary" strokeWidth={1.8} />
-              <span>
-                <span className="font-medium text-ink">Modo demostración.</span> Los datos son simulados y no
-                provienen de un dispositivo.{" "}
-                <a href={href("dispositivo")} className="font-medium text-primary underline-offset-2 hover:underline">
-                  Cambiar fuente de datos
-                </a>
-              </span>
+              <DemoBanner />
             </div>
           </div>
         )}

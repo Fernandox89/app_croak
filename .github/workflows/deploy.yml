@@ -1,4 +1,4 @@
-name: Publicar en GitHub Pages
+name: Publicar demo en GitHub Pages
 
 on:
   push:
@@ -24,14 +24,8 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build
-        env:
-          VITE_FIREBASE_API_KEY: ${{ vars.VITE_FIREBASE_API_KEY }}
-          VITE_FIREBASE_AUTH_DOMAIN: ${{ vars.VITE_FIREBASE_AUTH_DOMAIN }}
-          VITE_FIREBASE_DATABASE_URL: ${{ vars.VITE_FIREBASE_DATABASE_URL }}
-          VITE_FIREBASE_PROJECT_ID: ${{ vars.VITE_FIREBASE_PROJECT_ID }}
-          VITE_FIREBASE_APP_ID: ${{ vars.VITE_FIREBASE_APP_ID }}
-          VITE_DEFAULT_DEVICE_ID: ${{ vars.VITE_DEFAULT_DEVICE_ID }}
+      # La demo pública no lleva datos de Firebase; la app del equipo se publica con npm run deploy:app.
+      - run: npm run build:demo
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist

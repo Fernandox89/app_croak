@@ -1,24 +1,52 @@
 import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
-import { defineConfig } from "vite";
+import { fileURLToPath } from "node:url";
+import { type Plugin, defineConfig, loadEnv } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 
 import pkg from "./package.json" with { type: "json" };
 
-// GitHub Pages sirve la app en /app_croak/.
-export default defineConfig({
+// Dos ediciones del mismo código (ver src/lib/edition.ts):
+//   VITE_EDITION=demo  demostración pública en GitHub Pages (/app_croak/), sin Firebase.
+//   VITE_EDITION=full  app del equipo en Firebase Hosting, con inicio de sesión.
+// En la edición demo, firebase.ts y auth.tsx se reemplazan por versiones vacías: así el SDK, la pantalla
+// de inicio de sesión y los datos del proyecto no llegan al paquete público.
+function demoStubs(): Plugin {
+  const stubs: Record<string, string> = {
+    "/src/lib/firebase.ts": fileURLToPath(new URL("./src/lib/firebase.stub.ts", import.meta.url)),
+    "/src/lib/auth.tsx": fileURLToPath(new URL("./src/lib/auth.stub.tsx", import.meta.url)),
+  };
+  return {
+    name: "croak-demo-stubs",
+    enforce: "pre",
+    async resolveId(source, importer, options) {
+      if (!importer || !/\/(firebase|auth)$/.test(source)) return null;
+      const resolved = await this.resolve(source, importer, { ...options, skipSelf: true });
+      const hit = resolved && Object.keys(stubs).find((k) => resolved.id.endsWith(k));
+      return hit ? stubs[hit] : null;
+    },
+  };
+}
+
+export default defineConfig(({ mode }) => {
+  const env = { ...loadEnv(mode, process.cwd(), "VITE_"), ...process.env };
+  const demo = env.VITE_EDITION === "demo";
+  return {
   base: "./",
   define: { __APP_VERSION__: JSON.stringify(pkg.version) },
   plugins: [
+    demo && demoStubs(),
     react(),
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
       includeAssets: ["icons/favicon-32.png", "icons/apple-touch-icon.png", "icons/logo.png"],
       manifest: {
-        name: "Croak",
+        name: demo ? "Croak · Demostración" : "Croak",
         short_name: "Croak",
-        description: "Monitoreo de pH, turbidez y TDS del agua de tu instalación.",
+        description: demo
+          ? "Demostración con datos simulados del monitor de agua Croak."
+          : "Monitoreo de pH, turbidez y TDS del agua de tu instalación.",
         lang: "es-MX",
         start_url: "./",
         scope: "./",
@@ -44,8 +72,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         // El SDK de Firebase cambia poco: en su propio archivo se aprovecha la caché entre versiones.
-        manualChunks: { firebase: ["firebase/app", "firebase/auth", "firebase/database"] },
+        manualChunks: demo ? undefined : { firebase: ["firebase/app", "firebase/auth", "firebase/database"] },
       },
     },
   },
+  };
 });
