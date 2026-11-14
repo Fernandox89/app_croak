@@ -28,6 +28,9 @@ export function MetricCard({
   const state = metricState(metric, latest, thresholds);
   const channel = latest?.[metric];
   const points = useMemo(() => history.map((r) => ({ t: r.ts, v: r[metric]?.value ?? null })), [history, metric]);
+  // Si el dispositivo lleva poco tiempo enviando, la mini gráfica empieza en la primera lectura en vez de
+  // dejar la línea apretada en el borde derecho.
+  const from = Math.max(now - windowMs, Math.min(points[0]?.t ?? now, now - 60_000));
 
   return (
     <Card className="flex flex-col">
@@ -58,7 +61,7 @@ export function MetricCard({
         <TrendChart
           compact
           points={points}
-          from={now - windowMs}
+          from={from}
           to={now}
           band={band(metric, thresholds)}
           decimals={info.decimals}
