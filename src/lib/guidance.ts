@@ -20,7 +20,7 @@ const GUIDANCE: Record<AlertParam, string[]> = {
   ],
   sensor_ph: [
     "Verifica que el electrodo esté sumergido y que el conector BNC esté firme.",
-    "Si el problema sigue, recalibra el sensor o reemplaza el electrodo: su vida útil es de meses, no de años.",
+    "Si el problema sigue, recalibra el sensor; si ya no calibra o responde lento, reemplaza el electrodo.",
   ],
   sensor_tds: ["Verifica que la sonda esté sumergida y su cable conectado.", "Limpia la sonda si tiene sarro."],
   sensor_turbidity: [
