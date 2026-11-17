@@ -90,19 +90,19 @@ export function overallState(r: Reading | null, s: DeviceStatus | null, t: Thres
 
 export const OVERALL_COPY: Record<OverallState, { title: string; detail: string }> = {
   ok: {
-    title: "Lecturas dentro de los intervalos configurados",
-    detail: "No se detectan cambios que requieran atención.",
+    title: "Todo en orden",
+    detail: "Las tres mediciones están dentro de su rango normal.",
   },
   attention: {
-    title: "Hay lecturas fuera del intervalo configurado",
-    detail: "Revisa el detalle de cada indicador. Si el cambio persiste, inspecciona el tinaco o la instalación.",
+    title: "Revisa tu agua",
+    detail: "Hay mediciones fuera de su rango normal. Si el cambio persiste, inspecciona el tinaco o la instalación.",
   },
   fault: {
-    title: "Un sensor no está entregando lecturas válidas",
+    title: "Un sensor necesita revisión",
     detail: "Revisa la conexión del sensor indicado. Sus valores no se usan para evaluar el agua.",
   },
   offline: {
-    title: "El dispositivo no se ha comunicado recientemente",
+    title: "Croak no se ha conectado recientemente",
     detail: "Los valores mostrados corresponden a la última lectura recibida.",
   },
   waiting: {
@@ -110,6 +110,20 @@ export const OVERALL_COPY: Record<OverallState, { title: string; detail: string 
     detail: "Cuando el dispositivo envíe datos aparecerán aquí.",
   },
 };
+
+/** Escala de la barra de rango del panel: dominio mostrado y etiquetas de los extremos. */
+export const METRIC_SCALE: Record<MetricKey, { label: string; low: string; high: string; domain: (t: Thresholds) => [number, number] }> = {
+  ph: { label: "pH", low: "Ácida", high: "Alcalina", domain: () => [4, 10] },
+  turbidity: { label: "Turbidez", low: "Clara", high: "Turbia", domain: (t) => [0, Math.max(100, t.turbidity_max * 2)] },
+  tds: { label: "Minerales disueltos (TDS)", low: "Bajo", high: "Alto", domain: (t) => [0, Math.max(1500, t.tds_max * 1.5)] },
+};
+
+/** "Alto" o "Bajo" para una lectura fuera de rango; null si está dentro o no hay valor. */
+export function outOfRangeSide(key: MetricKey, r: Reading | null, t: Thresholds): "low" | "high" | null {
+  const v = r?.[key]?.value;
+  if (v === null || v === undefined || metricState(key, r, t) !== "attention") return null;
+  return key === "ph" && v < t.ph_min ? "low" : "high";
+}
 
 export const ALERT_PARAM_LABEL: Record<AlertParam, string> = {
   ph: "pH",

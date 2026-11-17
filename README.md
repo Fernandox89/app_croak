@@ -19,7 +19,7 @@ Lo que esté en desarrollo se agrega solo a la app del equipo; la demo cambia so
 
 ## Pantallas
 
-- **Panel:** estado general, valor actual de cada indicador con su intervalo configurado y tendencia de 30 minutos, alertas activas con "Qué hacer", condiciones de medición y estado del mantenimiento.
+- **Panel:** saludo y bloque de estado del agua en lenguaje simple (con botón "Qué hacer" si hay mediciones fuera de rango), valor actual de cada indicador con una barra que marca su rango normal y detalles técnicos plegables (calibración y voltaje), alertas activas, condiciones de medición y estado del mantenimiento.
 - **Tendencias:** gráfica de cada indicador en 15 min, 1 h, 6 h o 24 h, con mínimo, promedio y máximo, la banda del intervalo configurado y la referencia de la NOM-127-SSA1-2021. Descarga del periodo en CSV.
 - **Reporte** (`#/reporte`, desde Tendencias): resumen de 24 horas o 7 días para imprimir o guardar como PDF: mínimo, promedio, máximo y tiempo dentro del intervalo por indicador, alertas y mantenimiento registrado.
 - **Alertas:** alertas activas, cada una con pasos concretos de qué hacer (`src/lib/guidance.ts`), e historial agrupado por día. Las genera el firmware cuando un valor se mantiene fuera de su intervalo durante N lecturas seguidas.
@@ -32,6 +32,7 @@ Lo que esté en desarrollo se agrega solo a la app del equipo; la demo cambia so
   - borrado del historial de lecturas y alertas (doble confirmación);
   - fuente de datos (dispositivo real o demostración) y cuenta.
 - **Simulación** (demo pública, en lugar de Dispositivo): escenarios para provocar alertas, intervalos de referencia, mantenimiento de ejemplo y enlace a la landing.
+- **Ajustes:** tema claro (predeterminado) u oscuro. Se guarda en el navegador (`croak-theme`) y `index.html` lo aplica antes de pintar.
 
 ## Fuente de datos
 

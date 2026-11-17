@@ -37,13 +37,13 @@ export function PageHeader({ title, subtitle, action }: { title: string; subtitl
 }
 
 const STATE_STYLE: Record<MetricState, { label: string; className: string }> = {
-  ok: { label: "Dentro del intervalo", className: "bg-ok-soft text-ok" },
-  attention: { label: "Fuera del intervalo", className: "bg-warn-soft text-warn" },
+  ok: { label: "Normal", className: "bg-ok-soft text-ok" },
+  attention: { label: "Fuera de rango", className: "bg-warn-soft text-warn" },
   fault: { label: "Sin lectura válida", className: "bg-danger-soft text-danger" },
   nodata: { label: "Sin datos", className: "bg-neutral-soft text-neutral" },
 };
 
-export function StatePill({ state }: { state: MetricState }) {
+export function StatePill({ state, label }: { state: MetricState; label?: string }) {
   const s = STATE_STYLE[state];
   return (
     <span
@@ -53,7 +53,7 @@ export function StatePill({ state }: { state: MetricState }) {
       )}
     >
       <span className="size-1.5 rounded-full bg-current" aria-hidden />
-      {s.label}
+      {label ?? s.label}
     </span>
   );
 }

@@ -9,6 +9,7 @@ import { Alerts } from "./pages/Alerts";
 import { Device } from "./pages/Device";
 import { Overview } from "./pages/Overview";
 import { Report } from "./pages/Report";
+import { Settings } from "./pages/Settings";
 import { Simulation } from "./pages/Simulation";
 import { Trends } from "./pages/Trends";
 
@@ -18,6 +19,7 @@ const ROUTES: Record<string, Route> = {
   alertas: "alertas",
   dispositivo: "dispositivo",
   reporte: "reporte",
+  ajustes: "ajustes",
 };
 
 const TITLES: Record<Route, string> = {
@@ -26,6 +28,7 @@ const TITLES: Record<Route, string> = {
   alertas: "Alertas",
   dispositivo: IS_DEMO ? "Simulación" : "Dispositivo",
   reporte: "Reporte",
+  ajustes: "Ajustes",
 };
 
 function readRoute(): Route {
@@ -93,6 +96,7 @@ export function App() {
       {route === "tendencias" && <Trends />}
       {route === "alertas" && <Alerts />}
       {route === "reporte" && <Report />}
+      {route === "ajustes" && <Settings />}
       {page}
     </AppShell>
   );

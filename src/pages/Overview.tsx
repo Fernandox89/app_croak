@@ -1,22 +1,35 @@
-import { ArrowRight, CircleAlert, CircleCheck, Clock, Thermometer, TriangleAlert, WifiOff, Wrench } from "lucide-react";
+import { ArrowRight, CircleAlert, CircleCheck, Clock, MapPin, Thermometer, TriangleAlert, WifiOff, Wrench } from "lucide-react";
 
 import { AlertRow } from "../components/AlertRow";
 import { href } from "../components/AppShell";
 import { MetricCard } from "../components/MetricCard";
 import { Card, CardHeader, EmptyState, PageHeader, cx } from "../components/ui";
-import { useAlerts, useConfig, useHistory, useLatest, useMaintenance, useNow, useStatus } from "../hooks/data";
+import { useAlerts, useConfig, useLatest, useMaintenance, useNow, useStatus } from "../hooks/data";
+import { useApp } from "../lib/app-context";
 import { formatInterval, formatRelative } from "../lib/format";
 import { pendingTasks } from "../lib/maintenance";
-import { METRICS, OVERALL_COPY, type OverallState, activeAlerts, lastContact, overallState } from "../lib/status";
+import {
+  METRICS,
+  METRIC_SCALE,
+  OVERALL_COPY,
+  type OverallState,
+  activeAlerts,
+  lastContact,
+  metricState,
+  overallState,
+} from "../lib/status";
 
-const WINDOW_MS = 30 * 60 * 1000;
+function greeting(now: number) {
+  const h = new Date(now).getHours();
+  return h < 12 ? "Buenos días" : h < 19 ? "Buenas tardes" : "Buenas noches";
+}
 
-const OVERALL_STYLE: Record<OverallState, { icon: typeof CircleCheck; className: string }> = {
-  ok: { icon: CircleCheck, className: "text-ok bg-ok-soft" },
-  attention: { icon: TriangleAlert, className: "text-warn bg-warn-soft" },
-  fault: { icon: CircleAlert, className: "text-danger bg-danger-soft" },
-  offline: { icon: WifiOff, className: "text-neutral bg-neutral-soft" },
-  waiting: { icon: Clock, className: "text-neutral bg-neutral-soft" },
+const OVERALL_STYLE: Record<OverallState, { icon: typeof CircleCheck; tile: string; card: string; title: string }> = {
+  ok: { icon: CircleCheck, tile: "text-ok bg-ok-soft", card: "border-line bg-surface", title: "text-ink" },
+  attention: { icon: TriangleAlert, tile: "text-warn bg-surface", card: "border-warn-line bg-warn-soft", title: "text-warn" },
+  fault: { icon: CircleAlert, tile: "text-danger bg-surface", card: "border-line bg-danger-soft", title: "text-danger" },
+  offline: { icon: WifiOff, tile: "text-neutral bg-neutral-soft", card: "border-line bg-surface", title: "text-ink" },
+  waiting: { icon: Clock, tile: "text-neutral bg-neutral-soft", card: "border-line bg-surface", title: "text-ink" },
 };
 
 export function Overview() {
@@ -25,17 +38,24 @@ export function Overview() {
   const latest = latestRaw ?? null;
   const status = statusRaw ?? null;
   const config = useConfig();
-  const history = useHistory(WINDOW_MS) ?? [];
   const alerts = useAlerts(50) ?? [];
   const now = useNow();
 
   const loading = latestRaw === undefined && statusRaw === undefined;
   const state = loading ? "waiting" : overallState(latest, status, config.thresholds, now);
   const copy = OVERALL_COPY[state];
-  const { icon: StateIcon, className: stateClass } = OVERALL_STYLE[state];
+  const style = OVERALL_STYLE[state];
+  const StateIcon = style.icon;
   const last = lastContact(status, latest);
   const interval = status?.interval_s ?? config.interval_s;
-  const gapMs = Math.max(interval * 3000, 180_000);
+  const { source } = useApp();
+  const outOfRange = METRICS.filter((m) => metricState(m.key, latest, config.thresholds) === "attention").map(
+    (m) => METRIC_SCALE[m.key].label,
+  );
+  const detail =
+    state === "attention" && outOfRange.length
+      ? `${outOfRange.join(" y ")} ${outOfRange.length > 1 ? "están" : "está"} fuera de su rango normal. Si el cambio persiste, inspecciona el tinaco o la instalación.`
+      : copy.detail;
   const active = activeAlerts(alerts);
   const maintenance = useMaintenance();
   const overdue = maintenance === undefined ? [] : pendingTasks(maintenance, now);
@@ -44,21 +64,36 @@ export function Overview() {
   return (
     <>
       <PageHeader
-        title="Panel"
+        title={greeting(now)}
         subtitle={last ? `Última lectura ${formatRelative(last, now)}` : "Sin lecturas recibidas"}
       />
 
-      <Card className="mb-6">
-        <div className="flex items-start gap-4 p-5">
-          <div className={cx("flex size-11 shrink-0 items-center justify-center rounded-xl", stateClass)}>
-            <StateIcon className="size-[22px]" strokeWidth={1.8} />
-          </div>
-          <div className="min-w-0">
-            <h2 className="font-display text-lg font-semibold text-ink">{copy.title}</h2>
-            <p className="mt-1 text-sm text-muted">{copy.detail}</p>
-          </div>
+      <section
+        aria-live="polite"
+        className={cx("mb-6 flex flex-wrap items-center gap-4 rounded-3xl border p-5 shadow-card md:gap-5 md:p-6", style.card)}
+      >
+        <div className={cx("flex size-14 shrink-0 items-center justify-center rounded-2xl", style.tile)}>
+          <StateIcon className="size-7" strokeWidth={1.8} />
         </div>
-      </Card>
+        <div className="min-w-[14rem] flex-1">
+          <div className="flex items-center gap-1.5 text-xs text-muted">
+            <MapPin className="size-3.5" strokeWidth={1.8} />
+            {source.kind === "demo" ? "Equipo de demostración" : `Equipo ${source.deviceId}`}
+          </div>
+          <h2 className={cx("mt-1 font-display text-2xl font-semibold tracking-tight md:text-[26px]", style.title)}>
+            {copy.title}
+          </h2>
+          <p className="mt-1 text-sm text-muted">{detail}</p>
+        </div>
+        {state === "attention" && (
+          <a
+            href={href("alertas")}
+            className="inline-flex h-10 items-center gap-2 rounded-xl bg-warn px-4 text-sm font-medium text-white hover:opacity-90 dark:text-bg"
+          >
+            Qué hacer <ArrowRight className="size-4" />
+          </a>
+        )}
+      </section>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {METRICS.map((m) => (
@@ -66,11 +101,7 @@ export function Overview() {
             key={m.key}
             metric={m.key}
             latest={latest}
-            history={history}
             thresholds={config.thresholds}
-            now={now}
-            windowMs={WINDOW_MS}
-            gapMs={gapMs}
           />
         ))}
       </div>

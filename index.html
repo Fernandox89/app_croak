@@ -4,7 +4,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <meta name="description" content="Monitoreo de pH, turbidez y TDS del agua de tu instalación." />
-    <meta name="theme-color" content="#0b7a4f" />
+    <meta name="theme-color" content="#f4f8fb" />
+    <script>
+      try {
+        if (localStorage.getItem("croak-theme") === "dark") {
+          document.documentElement.dataset.theme = "dark";
+          document.querySelector('meta[name="theme-color"]').setAttribute("content", "#0b1117");
+        }
+      } catch (e) {}
+    </script>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <link rel="icon" type="image/png" href="icons/favicon-32.png" />

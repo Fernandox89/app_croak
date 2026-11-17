@@ -1,4 +1,4 @@
-import { Bell, ChartLine, CircleAlert, Cpu, FlaskConical, LayoutDashboard, LogOut, SlidersHorizontal } from "lucide-react";
+import { Bell, ChartLine, CircleAlert, Cpu, FlaskConical, LayoutDashboard, LogOut, Settings, SlidersHorizontal } from "lucide-react";
 import type { ReactNode } from "react";
 
 import { useAlerts, useLatest, useNow, useSourceError, useStatus } from "../hooks/data";
@@ -8,7 +8,7 @@ import { IS_DEMO, LANDING_URL } from "../lib/edition";
 import { activeAlerts, isOnline } from "../lib/status";
 import { cx } from "./ui";
 
-export type Route = "panel" | "tendencias" | "alertas" | "dispositivo" | "reporte";
+export type Route = "panel" | "tendencias" | "alertas" | "dispositivo" | "reporte" | "ajustes";
 
 const NAV: { route: Route; label: string; icon: typeof Bell }[] = [
   { route: "panel", label: "Panel", icon: LayoutDashboard },
@@ -17,6 +17,7 @@ const NAV: { route: Route; label: string; icon: typeof Bell }[] = [
   IS_DEMO
     ? { route: "dispositivo", label: "Simulación", icon: SlidersHorizontal }
     : { route: "dispositivo", label: "Dispositivo", icon: Cpu },
+  { route: "ajustes", label: "Ajustes", icon: Settings },
 ];
 
 export const href = (r: Route) => (r === "panel" ? "#/" : `#/${r}`);
